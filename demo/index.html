@@ -1,0 +1,91 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>wid-card-dialog Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../paper-styles/paper-styles.html">
+    <link rel="import" href="x-app.html">
+    <link rel="import" href="../wid-card-dialog.html">
+  </head>
+  <body class="fullbleed layout vertical">
+
+    <p>An example of <code>&lt;wid-card-dialog&gt;</code>:</p>
+    <template is="dom-bind" id="app">
+
+      <div class="layout horizontal center-center">
+
+        <button on-tap="_onTap1">
+          Toggle card 1.
+        </button>
+        <button on-tap="_onTap2">
+          Toggle card 2.
+        </button>
+
+      </div>
+
+      <neon-animated-pages class="flex" selected="[[cardSelected]]">
+
+        <x-app>
+
+          <h1>Hello World</h1>
+
+        </x-app>
+        <wid-card-dialog 
+          on-card-dialog-closing="_onClosing">
+
+          <div class="layout vertical center">
+
+            <h2>Hello Dialog 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+          </div>
+
+        </wid-card-dialog>
+        <wid-card-dialog 
+          with-backdrop
+          on-card-dialog-closing="_onClosing">
+
+          <div class="layout vertical center">
+
+            <h2>Hello Dialog 2</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+          </div>
+
+        </wid-card-dialog>
+
+      </neon-animated-pages>
+      
+    </template>
+    <script>
+    
+      var app = document.querySelector('#app');
+
+      app.cardSelected = 0;
+
+      app._onTap1 = function () {
+        app.cardSelected = 1;
+      };
+      app._onTap2 = function () {
+        app.cardSelected = 2;
+      };
+      app._onClosing = function () {
+        app.cardSelected = 0;
+      };
+
+    </script>
+
+  </body>
+</html>

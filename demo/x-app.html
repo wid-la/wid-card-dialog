@@ -1,0 +1,60 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../neon-animation/neon-animation.html">
+<link rel="import" href="../../neon-animation/neon-animations.html">
+
+
+<dom-module id="x-app">
+
+  <style>
+    :host {
+      display: block;
+    }
+
+  </style>
+
+  <template>
+
+    <div class="fit layout vertical center-center">
+      <div id="container">
+        <content></content>
+      </div>
+    </div>
+
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'x-app',
+
+    behaviors: [
+      Polymer.NeonSharedElementAnimatableBehavior
+    ],
+
+    properties: {
+      animationConfig: {
+        value: function() {
+          return {
+            'exit': [{
+              name: 'ripple-animation',
+              id: 'ripple',
+              fromPage: this
+            }, {
+              name: 'hero-animation',
+              id: 'hero',
+              fromPage: this
+            }]
+          };
+        }
+      }
+    },
+
+    attached: function () {
+      this.sharedElements = {
+        'hero': this.$.container,
+        'ripple': this.$.container
+      };
+    }
+  });
+</script>

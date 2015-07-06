@@ -1,0 +1,279 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../neon-animation/neon-animation.html">
+<link rel="import" href="../neon-animation/neon-animations.html">
+
+<!--
+This element displays a modal view (or a fullscreen view on mobile)
+with a back button. You could enable a backdrop that will ripple when
+this componement will be displayed.
+This element should be used as a child of a component implementing
+the `iron-selector-behavior` as for example `neon-animated-pages`.
+
+Example:
+
+    <wid-card-dialog 
+      with-backdrop
+      on-dialog-card-closing="_onClosing">
+
+      <div class="layout vertical center">
+
+        <h2>Hello Dialog</h2>
+        <p>Lorem ipsum ...</p>
+
+      </div>
+
+    </wid-card-dialog>
+
+@group Wid
+@element wid-card-dialog
+@demo demo/index.html
+-->
+<dom-module id="wid-card-dialog">
+
+  <style>
+    :host {
+      display: block;
+      position: fixed !important;
+      z-index: var(--wid-card-dialog-z-index, 0);
+    }
+
+    #fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      opacity: var(--wid-card-dialog-opacity, 0.8);
+      background-color: var(--wid-card-dialog-overlay-background-color, lightblue);
+    }
+
+    #card {
+      position: relative;
+      margin: 100px 50px 0;
+      padding: 20px;
+      height: var(--wid-card-dialog-height, 500px);
+      background-color: var(--wid-card-dialog-background-color, lightblue);
+    }
+
+    @media (max-width: 639px) {
+      #card {
+        margin: 0;
+        height: 100vh;
+      }
+    }
+
+    #arrow-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: var(--wid-card-dialog-arrow-back-margin, 20px);
+      cursor: pointer;
+    }
+
+  </style>
+
+  <template>
+
+    <template is="dom-if" if="{{withBackdrop}}">
+
+      <div id="fixed"></div>
+
+    </template>
+    <paper-material id="card" elevation="3">
+
+      <iron-icon id="arrow-back" icon="arrow-back"></iron-icon>
+      <content></content>
+
+    </paper-material>
+
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'wid-card-dialog',
+
+    behaviors: [
+      Polymer.NeonSharedElementAnimatableBehavior
+    ],
+
+    properties: {
+      /**
+       * Define if the modal card should use a fixed background used to do a ripple animation
+       * on opening
+       * @type {Boolean}
+       */
+      withBackdrop: {
+        type: Boolean,
+        value: false,
+        observer: '_withBackdropChanged'
+      },
+
+      /**
+       * Define the origin of opening. Usefull when you want to call an animation on the
+       * origin when this card is closed.
+       * @type {Animatable}
+       */
+      origin: {
+        type: Object
+      },
+
+      /**
+       * Animation to be called on the `origin` when this card is closed.
+       * Used only when `origin` is defined.
+       * @type {String}
+       */
+      originClosingAnimation: {
+        type: String,
+        value: 'fade-in'
+      },
+
+      /**
+       * SharedElements configuration. Cf. `neon-animation`.
+       * @type {SharedElementsConfiguration}
+       */
+      sharedElements: {
+        type: Object,
+        value: function() {
+          return {
+            'hero': this.$.card,
+            'ripple': this.$.fixed
+          };
+        }
+      },
+
+      /**
+       * Default animation configuration. As during the lifecycle of the element we extend the animation configuration,
+       * we use this object as parent.
+       * @type {AnimationConfiguration}
+       */
+      _defaultAnimationConfig: {
+        type: Object,
+        value: function() {
+          return {
+            'entry': [{
+              name: 'hero-animation',
+              id: 'hero',
+              toPage: this,
+              timing: {
+                delay: 150
+              }
+            }, {
+              name: 'fade-in-animation',
+              node: this
+            }],
+
+            'exit': [{
+              name: 'transform-animation',
+              transformFrom: 'none',
+              transformTo: 'translate(0px,-200vh)',
+              node: this.$.card
+            }]
+          };
+        }
+      },
+
+      /**
+       * Animation configuration. Cf. `neon-animation`
+       * @type {AnimationConfiguration}
+       */
+      animationConfig: {
+        type: Object
+      }
+    },
+
+    observers: [
+      '_updateAnimationConfig(withBackdrop, origin)'
+    ],
+
+    listeners: {
+      tap: '_onTap'
+    },
+
+    /**
+     * The `card-dialog-closing` event is fired whenever the user clicks outside the card.
+     *
+     * @event card-dialog-closing
+     */
+
+    /**
+     * The `card-dialog-tap` event is fired whenever the user clicks in the card.
+     *
+     * @event card-dialog-tap
+     */
+
+    /**
+     * When the component is attached, create a symlink between
+     * `animationConfig` and `_defaultAnimationConfig`
+     */
+    attached: function () {
+      this.animationConfig = this._defaultAnimationConfig;
+    },
+
+    /**
+     * Update the static `$` map with the `#fixed` DOM element and update `sharedElements`
+     * property.
+     */
+    _withBackdropChanged: function () {
+      this.async(function () {
+        this.$.fixed = this.$$('#fixed');
+        this.sharedElements.ripple = this.$.fixed;
+
+        this._updateAnimationConfig();
+      });
+    },
+
+    /**
+     * Generate animationConfig whenever `withBackdrop` or `origin` change.
+     */
+    _updateAnimationConfig: function () {
+
+      var animationConfig = {
+            entry: this._defaultAnimationConfig.entry.slice(),
+            exit: this._defaultAnimationConfig.exit.slice()
+          },
+          exitAnimationLength = 1;
+
+      if (this.withBackdrop) {
+        animationConfig.entry = [{
+          name: 'ripple-animation',
+          id: 'ripple',
+          toPage: this
+        }].concat(animationConfig.entry);
+
+        animationConfig.exit = [{
+          name: 'fade-out-animation',
+          node: this.$.fixed
+        }].concat(animationConfig.exit);
+        exitAnimationLength++;
+      }
+      if (this.origin && this.originClosingAnimation) {
+        animationConfig.exit.push({
+          animatable: this.origin,
+          type: this.originClosingAnimation
+        });
+      }
+      this.animationConfig = animationConfig;
+
+    },
+
+    /**
+     * On each tap we check if the user clicked somewhere else than the card.
+     * Then, we fire a closing event indicating that the parent should change page.
+     * Else, we fire a tap event.
+     * @param  {CustomEvent} e Tap event
+     */
+    _onTap: function (e) {
+      var event = 'card-dialog-' + ((
+            e.target === this ||
+            e.target === this.$.fixed ||
+            e.target === this.$['arrow-back']
+          ) ? 'closing' : 'tap');
+      this.fire(event);
+    }
+  });
+</script>

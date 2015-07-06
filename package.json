@@ -1,10 +1,10 @@
 {
   "name": "wid-card-dialog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
-  "description": "An element providing a solution to no problem in particular.",
+  "description": "This element displays a modal view",
   "keywords": [
     "web-component",
     "web-components",

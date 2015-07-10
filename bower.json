@@ -1,6 +1,6 @@
 {
   "name": "wid-card-dialog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -22,7 +22,6 @@
     "polymer": "Polymer/polymer#^1.0.0",
     "iron-icon": "PolymerElements/iron-icon#~1.0.2",
     "neon-animation": "PolymerElements/neon-animation#~1.0.4",
-    "web-animations-js": "web-animations-js#2.1.0",
     "iron-icons": "PolymerElements/iron-icons#~1.0.3",
     "paper-styles": "PolymerElements/paper-styles#~1.0.7",
     "paper-material": "PolymerElements/paper-material#~1.0.0"

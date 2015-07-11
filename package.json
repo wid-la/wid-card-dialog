@@ -2,18 +2,21 @@
   "name": "wid-card-dialog",
   "version": "1.0.3",
   "authors": [
-    "Anonymous <anonymous@example.com>"
+    "Thomas Hourlier <hourliert@gmail.com>"
   ],
   "description": "This element displays a modal view",
   "keywords": [
     "web-component",
     "web-components",
     "polymer",
-    "seed"
+    "dialog",
+    "modal",
+    "card",
+    "material"
   ],
   "main": "wid-card-dialog.html",
-  "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/<USERNAME>/wid-card-dialog/",
+  "license": "MIT",
+  "homepage": "https://github.com/wid-la/wid-card-dialog",
   "ignore": [
     "/.*",
     "/test/",
@@ -31,5 +34,11 @@
     "polyserve": "^0.4.0",
     "ps-node": "0.0.4",
     "web-component-tester": "^3.1.4"
+  },
+  "dependencies": {
+    "gulp-bump": "^0.3.1",
+    "gulp-filter": "^2.0.2",
+    "gulp-git": "^1.2.4",
+    "gulp-tag-version": "^1.2.1"
   }
 }

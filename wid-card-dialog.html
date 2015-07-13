@@ -5,6 +5,8 @@
 <link rel="import" href="../neon-animation/neon-animation.html">
 <link rel="import" href="../neon-animation/neon-animations.html">
 
+<link rel="import" href="../wid-hero-transition-behavior/wid-hero-transition-behavior.html">
+
 <!--
 This element displays a modal view (or a fullscreen view on mobile)
 with a back button. You could enable a backdrop that will ripple when
@@ -14,7 +16,7 @@ the `iron-selector-behavior` as for example `neon-animated-pages`.
 
 Example:
 
-    <wid-card-dialog 
+    <wid-card-dialog
       with-backdrop
       on-dialog-card-closing="_onClosing">
 
@@ -76,11 +78,8 @@ Example:
 
   <template>
 
-    <template is="dom-if" if="{{withBackdrop}}">
 
-      <div id="fixed"></div>
-
-    </template>
+    <div id="fixed" hidden$="[[!withBackdrop]]"></div>
     <paper-material id="card" elevation="3">
 
       <iron-icon id="arrow-back" icon="arrow-back"></iron-icon>
@@ -97,7 +96,7 @@ Example:
     is: 'wid-card-dialog',
 
     behaviors: [
-      Polymer.NeonSharedElementAnimatableBehavior
+      Polymer.WidHeroTransitionBehavior
     ],
 
     properties: {
@@ -108,8 +107,7 @@ Example:
        */
       withBackdrop: {
         type: Boolean,
-        value: false,
-        observer: '_withBackdropChanged'
+        value: false
       },
 
       /**
@@ -118,7 +116,8 @@ Example:
        * @type {Animatable}
        */
       origin: {
-        type: Object
+        type: Object,
+        observer: '_originChanged'
       },
 
       /**
@@ -130,6 +129,8 @@ Example:
         type: String,
         value: 'fade-in'
       },
+
+
 
       /**
        * SharedElements configuration. Cf. `neon-animation`.
@@ -143,54 +144,42 @@ Example:
             'ripple': this.$.fixed
           };
         }
-      },
-
-      /**
-       * Default animation configuration. As during the lifecycle of the element we extend the animation configuration,
-       * we use this object as parent.
-       * @type {AnimationConfiguration}
-       */
-      _defaultAnimationConfig: {
-        type: Object,
-        value: function() {
-          return {
-            'entry': [{
-              name: 'hero-animation',
-              id: 'hero',
-              toPage: this,
-              timing: {
-                delay: 150
-              }
-            }, {
-              name: 'fade-in-animation',
-              node: this
-            }],
-
-            'exit': [{
-              name: 'transform-animation',
-              transformFrom: 'none',
-              transformTo: 'translate(0px,-200vh)',
-              node: this.$.card
-            }]
-          };
-        }
-      },
-
-      /**
-       * Animation configuration. Cf. `neon-animation`
-       * @type {AnimationConfiguration}
-       */
-      animationConfig: {
-        type: Object
       }
     },
 
-    observers: [
-      '_updateAnimationConfig(withBackdrop, origin)'
-    ],
-
     listeners: {
       tap: '_onTap'
+    },
+
+    _originChanged: function () {
+      if (this.origin && this.originClosingAnimation) {
+
+        var animation = {
+            animatable: this.origin,
+            type: this.originClosingAnimation
+          },
+          index = -1,
+          exitConfig = this.animationConfig.exit;
+
+        var findInsertionPoint = function(config, animation) {
+          var i, ii;
+          for (i = 0, ii = config.length; i < ii; i++) {
+            if (config[i].type === animation.type && config[i].animatable) {
+              return i;
+            }
+          }
+          return -1;
+        };
+
+        index = findInsertionPoint(exitConfig, animation);
+
+        if (index > -1) {
+          exitConfig[index] = animation;
+        } else {
+          exitConfig.push(animation);
+        }
+
+      }
     },
 
     /**
@@ -204,61 +193,6 @@ Example:
      *
      * @event card-dialog-tap
      */
-
-    /**
-     * When the component is attached, create a symlink between
-     * `animationConfig` and `_defaultAnimationConfig`
-     */
-    attached: function () {
-      this.animationConfig = this._defaultAnimationConfig;
-    },
-
-    /**
-     * Update the static `$` map with the `#fixed` DOM element and update `sharedElements`
-     * property.
-     */
-    _withBackdropChanged: function () {
-      this.async(function () {
-        this.$.fixed = this.$$('#fixed');
-        this.sharedElements.ripple = this.$.fixed;
-
-        this._updateAnimationConfig();
-      });
-    },
-
-    /**
-     * Generate animationConfig whenever `withBackdrop` or `origin` change.
-     */
-    _updateAnimationConfig: function () {
-
-      var animationConfig = {
-            entry: this._defaultAnimationConfig.entry.slice(),
-            exit: this._defaultAnimationConfig.exit.slice()
-          },
-          exitAnimationLength = 1;
-
-      if (this.withBackdrop) {
-        animationConfig.entry = [{
-          name: 'ripple-animation',
-          id: 'ripple',
-          toPage: this
-        }].concat(animationConfig.entry);
-
-        animationConfig.exit = [{
-          name: 'fade-out-animation',
-          node: this.$.fixed
-        }].concat(animationConfig.exit);
-        exitAnimationLength++;
-      }
-      if (this.origin && this.originClosingAnimation) {
-        animationConfig.exit.push({
-          animatable: this.origin,
-          type: this.originClosingAnimation
-        });
-      }
-      this.animationConfig = animationConfig;
-
-    },
 
     /**
      * On each tap we check if the user clicked somewhere else than the card.

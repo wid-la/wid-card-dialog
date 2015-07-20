@@ -53,10 +53,16 @@ Example:
     }
 
     #card {
+      overflow: auto;
       position: relative;
-      margin: 100px 50px 0;
-      padding: 20px;
+      margin: 150px 100px 0;
       background-color: var(--wid-card-dialog-background-color, lightblue);
+    }
+
+    @media (min-width: 640px) {
+      #card {
+        height: var(--wid-card-dialog-height, 350px);
+      }
     }
 
     @media (max-width: 639px) {
@@ -82,8 +88,8 @@ Example:
     <div id="fixed" hidden$="[[!withBackdrop]]"></div>
     <paper-material id="card" elevation="3">
 
-      <iron-icon id="arrow-back" icon="arrow-back"></iron-icon>
       <content></content>
+      <iron-icon id="arrow-back" icon="arrow-back"></iron-icon>
 
     </paper-material>
 

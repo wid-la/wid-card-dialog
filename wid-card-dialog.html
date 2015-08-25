@@ -59,23 +59,18 @@ Example:
 
     #card {
       position: relative;
-      margin: 150px 100px 0;
+      margin: 150px 100px 150px;
       background-color: var(--wid-card-dialog-background-color, white);
       -webkit-transform: translateZ(0);
     }
 
-/*    @media (min-width: 640px) {
-      #card {
-        height: var(--wid-card-dialog-height, 350px);
-      }
-    }*/
-
-/*    @media (max-width: 639px) {
+    @media (max-width: 639px) {
       #card {
         margin: 0;
         height: 100vh;
+        overflow: auto;
       }
-    }*/
+    }
 
     #arrow-back {
       position: absolute;

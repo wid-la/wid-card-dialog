@@ -37,40 +37,43 @@ Example:
 
   <style>
     :host {
-      display: block;
       position: fixed !important;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
       z-index: var(--wid-card-dialog-z-index, 0);
+      overflow: auto;
     }
 
     #fixed {
       position: fixed;
       top: 0;
       left: 0;
-      height: 100vh;
-      width: 100vw;
+      bottom: 0;
+      right: 0;
       opacity: var(--wid-card-dialog-opacity, 0.8);
-      background-color: var(--wid-card-dialog-overlay-background-color, lightblue);
+      background-color: var(--wid-card-dialog-overlay-background-color, white);
     }
 
     #card {
-      overflow: hidden;
       position: relative;
       margin: 150px 100px 0;
-      background-color: var(--wid-card-dialog-background-color, lightblue);
+      background-color: var(--wid-card-dialog-background-color, white);
     }
 
-    @media (min-width: 640px) {
+/*    @media (min-width: 640px) {
       #card {
         height: var(--wid-card-dialog-height, 350px);
       }
-    }
+    }*/
 
-    @media (max-width: 639px) {
+/*    @media (max-width: 639px) {
       #card {
         margin: 0;
         height: 100vh;
       }
-    }
+    }*/
 
     #arrow-back {
       position: absolute;

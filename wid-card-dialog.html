@@ -60,9 +60,16 @@ Example:
 
     #card {
       position: relative;
-      margin: 150px 100px 150px;
-      background-color: var(--wid-card-dialog-background-color, white);
       -webkit-transform: translateZ(0);
+      background-color: var(--wid-card-dialog-background-color, white);
+    }
+
+    @media (min-width: 639px) {
+      #card {
+        margin-top: var(--wid-card-dialog-card-margin-top, 100px);
+        margin-left: var(--wid-card-dialog-card-margin-left, 13%);
+        margin-right: var(--wid-card-dialog-card-margin-right, 13%);
+      }
     }
 
     @media (max-width: 639px) {

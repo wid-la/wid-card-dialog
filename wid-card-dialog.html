@@ -4,6 +4,7 @@
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../neon-animation/neon-animation.html">
 <link rel="import" href="../neon-animation/neon-animations.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
 
 <link rel="import" href="../wid-hero-transition-behavior/wid-hero-transition-behavior.html">
 
@@ -64,19 +65,30 @@ Example:
       background-color: var(--wid-card-dialog-background-color, white);
     }
 
-    @media (min-width: 639px) {
+    @media (min-width: 800px) {
       #card {
         margin-top: var(--wid-card-dialog-card-margin-top, 100px);
         margin-bottom: var(--wid-card-dialog-card-margin-bottom, 100px);
-        margin-left: var(--wid-card-dialog-card-margin-left, 13%);
-        margin-right: var(--wid-card-dialog-card-margin-right, 13%);
+        margin-left: var(--wid-card-dialog-card-margin-left, auto);
+        margin-right: var(--wid-card-dialog-card-margin-right, auto);
+        width: var(--wid-card-dialog-card-width, 800px);
+      }
+    }
+
+    @media (min-width: 640px) and (max-width: 799px) {
+      #card {
+        margin-top: var(--wid-card-dialog-card-margin-top, 100px);
+        margin-bottom: var(--wid-card-dialog-card-margin-bottom, 100px);
+        margin-left: var(--wid-card-dialog-card-margin-left, auto);
+        margin-right: var(--wid-card-dialog-card-margin-right, auto);
+        width: var(--wid-card-dialog-card-width, 640px);
       }
     }
 
     @media (max-width: 639px) {
       #card {
         margin: 0;
-        height: 100vh;
+        height: var(--wid-card-dialog-card-height, 100vh);;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
       }
@@ -94,7 +106,8 @@ Example:
 
   <template>
 
-
+    <iron-media-query query="(max-width: 639px)" query-matches="{{_isMobile}}"></iron-media-query>
+    <iron-media-query query="(min-width: 640px) and (max-width: 799px)" query-matches="{{_isTablet}}"></iron-media-query>
     <div id="fixed" hidden$="[[!withBackdrop]]"></div>
     <paper-material id="card" elevation="3">
 
